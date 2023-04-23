@@ -5,7 +5,7 @@
 typedef unsigned char BigInt[NUM_BITS / 8];
 
 /* Atribuicao */
-
+void big_sum_luiza(BigInt res, BigInt a, BigInt b);
 /* res = val (extensao com sinal) */
 void big_val(BigInt res, long val);
 

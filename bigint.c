@@ -49,54 +49,78 @@ void big_comp2(BigInt res, BigInt a)
             break;
         }
         res[i]++;
-        
     }
 }
 
 /* res = a + b */
-void big_sum(BigInt res, BigInt a, BigInt b)
+
+void big_sum_luiza(BigInt res, BigInt a, BigInt b)
 {
     int bitA = 0, bitB = 0, bitR = 0, overflow = 0;
-    for(int i = 0; i < sizeof(BigInt); i++){
-        
-        if(overflow && (a[i] != 0xFF)){ // verifica se cabe o overflow de + 1 no a
+    for (int i = 0; i < sizeof(BigInt); i++)
+    {
+
+        if (overflow && (a[i] != 0xFF))
+        { // verifica se cabe o overflow de + 1 no a
             a[i] = a[i] + overflow;
             overflow = 0;
         }
-        else if(overflow && (b[i] != 0xFF)){ // verifica se cabe o overflow de + 1 no b
+        else if (overflow && (b[i] != 0xFF))
+        { // verifica se cabe o overflow de + 1 no b
             b[i] = b[i] + overflow;
             overflow = 0;
         }
         // caso não entre nessas condições, a flag de overflow continua como 1 para passar à próxima iteração
-        
-        if(a[i] & 0x80 == 0x80){ // guarda numa variável se o bit mais significativo de a é 1 ou 0
+
+        if ((a[i] & 0x80) == 0x80)
+        { // guarda numa variável se o bit mais significativo de a é 1 ou 0
             bitA = 1;
         }
-        else bitA = 0;
-        
-        if(b[i] & 0x80 == 0x80){ // guarda numa variável se o bit mais significativo de b é 1 ou 0
+        else
+            bitA = 0;
+
+        if ((b[i] & 0x80) == 0x80)
+        { // guarda numa variável se o bit mais significativo de b é 1 ou 0
             bitB = 1;
         }
-        else bitB = 0;
-        
-        // (0x7F = 0111 1111) 
+        else
+            bitB = 0;
+
+        // (0x7F = 0111 1111)
         a[i] = a[i] & 0x7F; // zera o bit mais significativo de a para não dar overflow na conta
         b[i] = b[i] & 0x7F; // zera o bit mais significativo de b para não dar overflow na conta
-        
+
         res[i] = a[i] + b[i]; // faz a soma
-        
-        if(res[i] & 0x80 == 0x80){  // guarda numa variável se o bit mais significativo do resultado é 1 ou 0
+
+        if ((res[i] & 0x80) == 0x80)
+        { // guarda numa variável se o bit mais significativo do resultado é 1 ou 0
             bitR = 1;
         }
-        else bitR = 0;
-        
-        if(bitA + bitB == 2){ // se os dois antes de somar já tinham esse bit igual a 1, vai dar overflow
+        else
+            bitR = 0;
+
+        if (bitA + bitB == 2)
+        { // se os dois antes de somar já tinham esse bit igual a 1, vai dar overflow
             overflow = 1;
         }
-        else ((bitA || bitB) && bitR){ // se um deles era 1 e na soma o resultado ficou com bit mais significativo 1 também, vai dar overflow
+        else if ((bitA || bitB) && bitR)
+        { // se um deles era 1 e na soma o resultado ficou com bit mais significativo 1 também, vai dar overflow
             overflow = 1;
             res[i] = res[i] & 0x7F; // zera o bit mais significativo do resultado, pois o 1 é passado no overflow
         }
+    }
+}
+
+void big_sum(BigInt res, BigInt a, BigInt b)
+{
+    unsigned char overflow = 0; // se torna 1 se a soma de dois bytes for maior que 255 (0xFF)
+
+    // para cada byte
+    for (int i = 0; i < sizeof(BigInt); i++)
+    {
+        unsigned int tmp = a[i] + b[i] + overflow; // soma os dois bytes e o overflow da soma anterior (resto)
+        overflow = (tmp > 0xff) ? 1 : 0;           // se a soma for maior que 255, overflow = 1
+        res[i] = tmp & 0xff;
     }
 }
 
