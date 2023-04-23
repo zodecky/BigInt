@@ -41,7 +41,16 @@ void big_comp2(BigInt res, BigInt a)
     {
         res[i] = ~a[i]; // inverte todos os bits
     }
-    res[0]++; // soma 1 no byte menos significativo
+    for (int i = 0; i < sizeof(BigInt); i++)
+    {
+        if (res[i] != 0xFF) // se tiver espaço para somar 1 (não for 1111 1111), não vai precisar levar o 1 para somar no próximo byte, então pode sair do for
+        {
+            res[i]++;
+            break;
+        }
+        res[i]++;
+        
+    }
 }
 
 /* res = a + b */
