@@ -125,7 +125,12 @@ void big_sum(BigInt res, BigInt a, BigInt b)
 }
 
 /* res = a - b */
-void big_sub(BigInt res, BigInt a, BigInt b);
+void big_sub(BigInt res, BigInt a, BigInt b)
+{
+    BigInt b_comp2; // complemento de 2 de b
+    big_comp2(b_comp2, b); // b_comp2 = -b
+    big_sum(res, a, b_comp2); // res = a + (-b)
+}
 
 /* res = a * b */
 void big_mul(BigInt res, BigInt a, BigInt b);
