@@ -32,7 +32,7 @@ void big_val(BigInt res, long val)
     }
 }
 
-/* Operacoes aritmeticas */
+/********** Operacoes aritmeticas ***********/
 
 /* res = -a */
 void big_comp2(BigInt res, BigInt a)
@@ -52,8 +52,8 @@ void big_comp2(BigInt res, BigInt a)
     }
 }
 
-/* res = a + b */
 
+/*
 void big_sum_luiza(BigInt res, BigInt a, BigInt b)
 {
     int bitA = 0, bitB = 0, bitR = 0, overflow = 0;
@@ -110,7 +110,9 @@ void big_sum_luiza(BigInt res, BigInt a, BigInt b)
         }
     }
 }
+*/
 
+/* res = a + b */
 void big_sum(BigInt res, BigInt a, BigInt b)
 {
     unsigned char overflow = 0; // se torna 1 se a soma de dois bytes for maior que 255 (0xFF)
@@ -120,7 +122,7 @@ void big_sum(BigInt res, BigInt a, BigInt b)
     {
         unsigned int tmp = a[i] + b[i] + overflow; // soma os dois bytes e o overflow da soma anterior (resto)
         overflow = (tmp > 0xff) ? 1 : 0;           // se a soma for maior que 255, overflow = 1
-        res[i] = tmp & 0xff;
+        res[i] = tmp & 0xff;                       // guarda o byte menos significativo da soma
     }
 }
 
@@ -141,7 +143,9 @@ void big_mul(BigInt res, BigInt a, BigInt b);
 void big_shl(BigInt res, BigInt a, int n);
 
 /* res = a >> n (logico) */
+// unsigned shift
 void big_shr(BigInt res, BigInt a, int n);
 
 /* res = a >> n (aritmetico) */
+// signed shift
 void big_sar(BigInt res, BigInt a, int n);
