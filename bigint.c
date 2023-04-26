@@ -52,7 +52,6 @@ void big_comp2(BigInt res, BigInt a)
     }
 }
 
-
 /*
 void big_sum_luiza(BigInt res, BigInt a, BigInt b)
 {
@@ -122,15 +121,15 @@ void big_sum(BigInt res, BigInt a, BigInt b)
     {
         unsigned int tmp = a[i] + b[i] + overflow; // soma os dois bytes e o overflow da soma anterior (resto)
         overflow = (tmp > 0xff) ? 1 : 0;           // se a soma for maior que 255, overflow = 1
-        res[i] = tmp & 0xff;                       // guarda o byte menos significativo da soma
+        res[i] = (unsigned char)tmp;               // guarda o byte menos significativo da soma
     }
 }
 
 /* res = a - b */
 void big_sub(BigInt res, BigInt a, BigInt b)
 {
-    BigInt b_comp2; // complemento de 2 de b
-    big_comp2(b_comp2, b); // b_comp2 = -b
+    BigInt b_comp2;           // complemento de 2 de b
+    big_comp2(b_comp2, b);    // b_comp2 = -b
     big_sum(res, a, b_comp2); // res = a + (-b)
 }
 
