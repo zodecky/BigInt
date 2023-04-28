@@ -139,7 +139,32 @@ void big_mul(BigInt res, BigInt a, BigInt b);
 /* Operacoes de deslocamento */
 
 /* res = a << n */
-void big_shl(BigInt res, BigInt a, int n);
+void big_shl (BigInt res, BigInt a, int n){
+  int j = 0;
+  unsigned char c1, c2 = 0;
+  
+  for(int i = 0; i != sizeof(BigInt); i++)
+    res[i] = a[i]; // passa a para res
+
+  for(; j < n/8; j++){ // n/8 representa o numero de shifts de 8 bits a serem feitos
+    for(int k = 15; j>-1; j--){ // caminha do final ao início
+      if (j == 0)
+        res[j] = 0; // preenche os iniciais com 0
+      else
+        res[j] = res[j-1]; // faz o shift de 8 bits para esquerda
+    }
+  }
+  
+  n = n%8; // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram 
+  if(n){
+    for(; j < 16; j++){ // aproveita o j para não precisar mexer os bytes já zerados
+      c1 = res[i] / pow(2, (8 - n)); // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
+      res[i] = (res[i] << n) | c2; // desloca para esquerda e acrescenta o que ele recebeu do anterior
+      c2 = c1;
+    }
+  }
+  return;
+}
 
 /* res = a >> n (logico) */
 // unsigned shift
