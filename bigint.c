@@ -2,6 +2,7 @@
 /*Luiza Marcondes 2210275 3WA*/
 
 #include "bigint.h"
+#include <math.h>
 
 void big_val(BigInt res, long val)
 {
