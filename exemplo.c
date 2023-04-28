@@ -98,6 +98,42 @@ int main(void)
     big_sum(res, res, res);
     assertBigInt(check, res);
 
+    big_val(res, 30);
+    big_val(res2, 50);
+    big_sub(res, res, res2);
+    big_val(check, -20);
+    assertBigInt(check, res);
+
+    big_val(res, 0);
+    big_val(res2, 479);
+    big_mul(res, res, res2);
+    big_val(check, 0);
+    assertBigInt(check, res);
+
+    big_val(res, 1);
+    big_val(res2, 479);
+    big_mul(res, res, res2);
+    big_val(check, 479);
+    assertBigInt(check, res);
+
+    big_val(res, 538);
+    big_val(res2, 0);
+    big_mul(res, res, res2);
+    big_val(check, 0);
+    assertBigInt(check, res);
+
+    big_val(res, 432);
+    big_val(res2, 1);
+    big_mul(res, res, res2);
+    big_val(check, 432);
+    assertBigInt(check, res);
+
+    big_val(res, 30);
+    big_val(res2, 479);
+    big_mul(res, res, res2);
+    big_val(check, 14370);
+    assertBigInt(check, res);
+
     printf("Todos os testes passaram com sucesso!\n");
 
     return 0;
