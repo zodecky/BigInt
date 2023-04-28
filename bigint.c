@@ -81,106 +81,120 @@ void big_mul(BigInt res, BigInt a, BigInt b);
 /* Operacoes de deslocamento */
 
 /* res = a << n */
-void big_shl (BigInt res, BigInt a, int n){
-  int j = 0;
-  unsigned char c1, c2 = 0;
-  
-  for(int i = 0; i != sizeof(BigInt); i++)
-    res[i] = a[i]; // passa a para res
+void big_shl(BigInt res, BigInt a, int n)
+{
+    int j = 0;
+    unsigned char c1, c2 = 0;
 
-  for(; j < n/8; j++){ // n/8 representa o numero de shifts de 8 bits a serem feitos
-    for(int k = 15; k>-1; k--){ // caminha do final ao início
-      if (k == 0)
-        res[k] = 0; // preenche os iniciais com 0
-      else
-        res[k] = res[k-1]; // faz o shift de 8 bits para esquerda
-    }
-  }
-  
-  n = n%8; // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram 
-  if(n){
-    for(; j < 16; j++){ // aproveita o j para não precisar mexer os bytes já zerados
-      c1 = res[j] / pow(2, (8 - n)); // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
-      res[j] = (res[j] << n) | c2; // desloca para esquerda e acrescenta o que ele recebeu do anterior
-      c2 = c1;
-    }
-  }
+    for (int i = 0; i != sizeof(BigInt); i++)
+        res[i] = a[i]; // passa a para res
 
+    for (; j < n / 8; j++) // n/8 representa o numero de shifts de 8 bits a serem feitos
+    {
+        for (int k = 15; k > -1; k--) // caminha do final ao início
+        {
+            if (k == 0)
+                res[k] = 0; // preenche os iniciais com 0
+            else
+                res[k] = res[k - 1]; // faz o shift de 8 bits para esquerda
+        }
+    }
+
+    n = n % 8; // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram
+    if (n)
+    {
+        for (; j < 16; j++)
+        {                                  // aproveita o j para não precisar mexer os bytes já zerados
+            c1 = res[j] / pow(2, (8 - n)); // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
+            res[j] = (res[j] << n) | c2;   // desloca para esquerda e acrescenta o que ele recebeu do anterior
+            c2 = c1;
+        }
+    }
 }
 
 /* res = a >> n (logico) */
 // unsigned shift
-void big_shr(BigInt res, BigInt a, int n){
+void big_shr(BigInt res, BigInt a, int n)
+{
     int j = 0;
     unsigned char c1, c2 = 0; // c2 inicializado com 0 por ser unsigned shift
-    
-    for(int i = 0; i != sizeof(BigInt); i++)
+
+    for (int i = 0; i != sizeof(BigInt); i++)
         res[i] = a[i]; // passa a para res
-    
-    for(; j < n/8; j++){ // n/8 representa o numero de shifts de 8 bits a serem feitos
-        for(int k = 0; (k + 1) < sizeof(BigInt); k++){ // caminha do início ao final
+
+    for (; j < n / 8; j++) // n/8 representa o numero de shifts de 8 bits a serem feitos
+    {
+        for (int k = 0; (k + 1) < sizeof(BigInt); k++) // caminha do início ao final
+        {
             if ((k + 1) == 15)
                 res[k + 1] = 0; // preenche os finais com 0
             else
                 res[k] = res[k + 1]; // faz o shift de 8 bits para direita
         }
     }
-    
-    n = n%8; // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram 
+
+    n = n % 8;              // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram
     j = sizeof(BigInt) - j; // começa da diferença para não precisar mexer nos bytes já zerados do final
-    
-    if(n){
-        for(; j > -1; j--){ 
+
+    if (n)
+    {
+        for (; j > -1; j--)
+        {
             // guarda o que precisará passar para o anterior na próxima iteração, já deslocado para esquerda a quantidade necessária para encaixar
-            c1 = res[j] * pow(2, (8 - n)); 
+            c1 = res[j] * pow(2, (8 - n));
             // desloca para direita e acrescenta o que ele recebeu da iteração anterior
-            res[j] = (res[j] >> n) | c2; 
+            res[j] = (res[j] >> n) | c2;
             c2 = c1;
         }
     }
-
 }
 
 /* res = a >> n (aritmetico) */
 // signed shift
-void big_sar(BigInt res, BigInt a, int n){
+void big_sar(BigInt res, BigInt a, int n)
+{
     int j = 0;
     unsigned char c1, c2;
-    
-    for(int i = 0; i != sizeof(BigInt); i++)
+
+    for (int i = 0; i != sizeof(BigInt); i++)
         res[i] = a[i]; // passa a para res
-    
-    if ((res[15] & 0x80) == 0x80){ // se o bit mais significativo for 1 (se o número é negativo)
-        c2 = 0xFF; 
+
+    if ((res[15] & 0x80) == 0x80) // se o bit mais significativo for 1 (se o número é negativo)
+    {
+        // inicializa c2 com a quantidade de 1 à esquerda necessária para encaixar no último shift
+        c2 = 0xFF;
         c2 = c2 << (n % 8);
-        //inicializa c2 com a quantidade de 1 à esquerda necessária para encaixar no último shift
     }
-    else // se o bit mais significativo for 0 (se o número é positivo)
+    else        // se o bit mais significativo for 0 (se o número é positivo)
         c2 = 0; // inicializa c2 com 0 pois não será preciso preencher com 1
-    
-    for(; j < n/8; j++){ // n/8 representa o numero de shifts de 8 bits a serem feitos
-        for(int k = 0; (k + 1) < sizeof(BigInt); k++){ // caminha do início ao final
+
+    for (; j < n / 8; j++) // n/8 representa o numero de shifts de 8 bits a serem feitos
+    {
+        for (int k = 0; (k + 1) < sizeof(BigInt); k++) // caminha do início ao final
+        {
             if ((k + 1) == 15)
                 if ((res[k + 1] & 0x80) == 0x80) // se o bit mais significativo for 1 (se o número é negativo)
-                    res[k + 1] = 0xFF; // preenche os finais com 1
-                else // se o bit mais significativo for 0 (se o número é positivo)
-                    res[k + 1] = 0; // preenche os finais com 0
+                    res[k + 1] = 0xFF;           // preenche os finais com 1
+                else                             // se o bit mais significativo for 0 (se o número é positivo)
+                    res[k + 1] = 0;              // preenche os finais com 0
             else
                 res[k] = res[k + 1]; // faz o shift de 8 bits para direita
         }
     }
-    
-    n = n%8; // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram 
+
+    n = n % 8;              // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram
     j = sizeof(BigInt) - j; // começa da diferença para não precisar mexer nos bytes já adicionados do final
-    
-    if(n){
-        for(; j > -1; j--){ 
+
+    if (n)
+    {
+        for (; j > -1; j--)
+        {
             // guarda o que precisará passar para o anterior na próxima iteração, já deslocado para esquerda a quantidade necessária para encaixar
-            c1 = res[j] * pow(2, (8 - n)); 
+            c1 = res[j] * pow(2, (8 - n));
+
             // desloca para direita e acrescenta o que ele recebeu da iteração anterior
-            res[j] = (res[j] >> n) | c2; 
+            res[j] = (res[j] >> n) | c2;
             c2 = c1;
         }
     }
-
 }

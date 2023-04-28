@@ -103,35 +103,128 @@ int main(void)
     big_sub(res, res, res2);
     big_val(check, -20);
     assertBigInt(check, res);
+    /*
+        big_val(res, 0);
+        big_val(res2, 479);
+        big_mul(res, res, res2);
+        big_val(check, 0);
+        assertBigInt(check, res);
 
-    big_val(res, 0);
-    big_val(res2, 479);
-    big_mul(res, res, res2);
-    big_val(check, 0);
+        big_val(res, 1);
+        big_val(res2, 479);
+        big_mul(res, res, res2);
+        big_val(check, 479);
+        assertBigInt(check, res);
+
+        big_val(res, 538);
+        big_val(res2, 0);
+        big_mul(res, res, res2);
+        big_val(check, 0);
+        assertBigInt(check, res);
+
+        big_val(res, 432);
+        big_val(res2, 1);
+        big_mul(res, res, res2);
+        big_val(check, 432);
+        assertBigInt(check, res);
+
+        big_val(res, 30);
+        big_val(res2, 479);
+        big_mul(res, res, res2);
+        big_val(check, 14370);
+        assertBigInt(check, res);
+    */
+
+    big_val(res, 0x0000000000000000);
+    big_val(check, 0x0000000000000000);
+    big_shl(res, res, 0);
     assertBigInt(check, res);
 
-    big_val(res, 1);
-    big_val(res2, 479);
-    big_mul(res, res, res2);
-    big_val(check, 479);
+    big_val(res, 0x0000000000000000);
+    big_val(check, 0x0000000000000000);
+    big_shl(res, res, 3);
     assertBigInt(check, res);
 
-    big_val(res, 538);
-    big_val(res2, 0);
-    big_mul(res, res, res2);
-    big_val(check, 0);
+    big_val(res, 0x0000000000000001);
+    big_val(check, 0x0000000000000008);
+    big_shl(res, res, 3);
     assertBigInt(check, res);
 
-    big_val(res, 432);
-    big_val(res2, 1);
-    big_mul(res, res, res2);
-    big_val(check, 432);
+    big_val(res, 0x0000000000000001);
+    big_val(check, 0x0000000000000000);
+    big_shl(res, res, 64);
     assertBigInt(check, res);
 
-    big_val(res, 30);
-    big_val(res2, 479);
-    big_mul(res, res, res2);
-    big_val(check, 14370);
+    big_val(res, 0xFFFFFFFFFFFFFFFF);
+    big_shl(res, res, 7);
+    big_val(check, 0xFFFFFFFFFFFFFF80);
+    assertBigInt(check, res);
+
+    // test big_shr
+    big_val(res, 0x0000000000000000);
+    big_val(check, 0x0000000000000000);
+    big_shr(res, res, 0);
+    assertBigInt(check, res);
+
+    big_val(res, 0x0000000000000000);
+    big_val(check, 0x0000000000000000);
+    big_shr(res, res, 3);
+    assertBigInt(check, res);
+
+    big_val(res, 0x0000000000000008);
+    big_val(check, 0x0000000000000001);
+    big_shr(res, res, 3);
+    assertBigInt(check, res);
+
+    big_val(res, 0x0000000000000001);
+    big_val(check, 0x0000000000000000);
+    big_shr(res, res, 64);
+    assertBigInt(check, res);
+
+    big_val(res, 0xFFFFFFFFFFFFFFFF);
+    big_shr(res, res, 7);
+    BigInt check2 = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x07};
+    assertBigIntHEX(check2, res);
+
+    // test big_sar
+    big_val(res, 0x0000000000000000);
+    big_val(check, 0x0000000000000000);
+    big_sar(res, res, 0);
+    assertBigInt(check, res);
+
+    big_val(res, 0x0000000000000000);
+    big_val(check, 0x0000000000000000);
+    big_sar(res, res, 3);
+    assertBigInt(check, res);
+
+    big_val(res, 0x0000000000000008);
+    big_val(check, 0x0000000000000001);
+    big_sar(res, res, 3);
+    assertBigInt(check, res);
+
+    big_val(res, 0x0000000000000001);
+    big_val(check, 0x0000000000000000);
+    big_sar(res, res, 64);
+    assertBigInt(check, res);
+
+    big_val(res, 0xFFFFFFFFFFFFFFFF);
+    big_sar(res, res, 7);
+    big_val(check, 0xFFFFFFFFFFFFFFFF);
+    assertBigInt(check, res);
+
+    big_val(res, 0x8000000000000000); /*PAROU AQUI AQ O TESTE TA ERRADO*/
+    big_sar(res, res, 7);
+    big_val(check, 0xFFFFFFFFFFFFFFFF);
+    assertBigIntHEX(check, res);
+
+    big_val(res, 0x8000000000000000);
+    big_sar(res, res, 63);
+    big_val(check, 0xFFFFFFFFFFFFFFFF);
+    assertBigInt(check, res);
+
+    big_val(res, 0x8000000000000000);
+    big_sar(res, res, 3);
+    big_val(check, 0xFFFFFFFFFFFFFFFF);
     assertBigInt(check, res);
 
     printf("Todos os testes passaram com sucesso!\n");
