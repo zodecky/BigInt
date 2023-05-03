@@ -172,11 +172,12 @@ void big_sar(BigInt res, BigInt a, int n)
     {
         for (int k = 0; (k + 1) < sizeof(BigInt); k++) // caminha do início ao final
         {
-            if ((k + 1) == 15)
+            if ((k + 1) == 15){
                 if ((res[k + 1] & 0x80) == 0x80) // se o bit mais significativo for 1 (se o número é negativo)
                     res[k + 1] = 0xFF;           // preenche os finais com 1
                 else                             // se o bit mais significativo for 0 (se o número é positivo)
                     res[k + 1] = 0;              // preenche os finais com 0
+            } 
             else
                 res[k] = res[k + 1]; // faz o shift de 8 bits para direita
         }
