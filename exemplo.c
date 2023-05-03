@@ -212,19 +212,19 @@ int main(void)
     big_val(check, 0xFFFFFFFFFFFFFFFF);
     assertBigInt(check, res);
 
-    big_val(res, 0x8000000000000000); /*PAROU AQUI AQ O TESTE TA ERRADO*/
+    big_val(res, 0x8000000000000000);
     big_sar(res, res, 7);
-    big_val(check, 0xFFFFFFFFFFFFFFFF);
+    big_val(check, 0xFF00000000000000);
     assertBigIntHEX(check, res);
 
     big_val(res, 0x8000000000000000);
     big_sar(res, res, 63);
-    big_val(check, 0xFFFFFFFFFFFFFFFF);
+    big_val(check, 0xFFFFFFFF00000000);
     assertBigInt(check, res);
 
     big_val(res, 0x8000000000000000);
     big_sar(res, res, 3);
-    big_val(check, 0xFFFFFFFFFFFFFFFF);
+    big_val(check, 0xF000000000000000);
     assertBigInt(check, res);
 
     printf("Todos os testes passaram com sucesso!\n");
