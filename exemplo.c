@@ -212,9 +212,9 @@ int main(void)
     big_val(check, 0xFFFFFFFFFFFFFFFF);
     assertBigInt(check, res);
 
-    big_val(res, 0x8000000000000000);
+    big_val(res, 0x8000000000000000); // 0xFFFFFFFFFFFFFFFF8000000000000000
     big_sar(res, res, 7);
-    big_val(check, 0xFF00000000000000);
+    big_val(check, 0xFF00000000000000); // 0xFFFFFFFFFFFFFFFFFF000000000000000
     assertBigIntHEX(check, res);
 
     big_val(res, 0x8000000000000000);
