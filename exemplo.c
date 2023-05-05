@@ -219,7 +219,7 @@ int main(void)
 
     big_val(res, 0x8000000000000000);
     big_sar(res, res, 63);
-    big_val(check, 0xFFFFFFFF00000000);
+    big_val(check, 0xFFFFFFFFFFFFFFFF);
     assertBigInt(check, res);
 
     big_val(res, 0x8000000000000000);
