@@ -155,11 +155,10 @@ void big_shr(BigInt res, BigInt a, int n)
     }
 
     n = n % 8;              // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram
-    j = sizeof(BigInt) - j; // começa da diferença para não precisar mexer nos bytes já zerados do final
 
     if (n)
     {
-        for (; j > -1; j--)
+        for (j = sizeof(BigInt) - 1; j > -1; j--)
         {
             // guarda o que precisará passar para o anterior na próxima iteração, já deslocado para esquerda a quantidade necessária para encaixar
             c1 = res[j] << (8 - n);
@@ -205,12 +204,11 @@ void big_sar(BigInt res, BigInt a, int n)
         }
     }
 
-    n = n % 8;              // pega o número de bits que precisa fazer o shift depois que os de bytes já terminaram
-    j = sizeof(BigInt) - j; // começa da diferença para não precisar mexer nos bytes já adicionados do final
+    n = n % 8;              // pega o número de bits que precisa fazer o shift depois que os de bytes já terminara
 
     if (n)
     {
-        for (; j > -1; j--)
+        for (j = sizeof(BigInt) - 1; j > -1; j--)
         {
             // guarda o que precisará passar para o anterior na próxima iteração, já deslocado para esquerda a quantidade necessária para encaixar
             c1 = res[j] << (8 - n);
