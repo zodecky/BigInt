@@ -86,7 +86,7 @@ void big_shl(BigInt res, BigInt a, int n)
     int j = 0;
     unsigned char c1, c2 = 0;
 
-    for (int i = 0; i != sizeof(BigInt); i++)
+    for (int i = 0; i < sizeof(BigInt); i++)
         res[i] = a[i]; // passa a para res
 
     for (; j < n / 8; j++) // n/8 representa o numero de shifts de 8 bits a serem feitos
@@ -105,7 +105,7 @@ void big_shl(BigInt res, BigInt a, int n)
     {
         for (; j < 16; j++)
         {                                  // aproveita o j para não precisar mexer os bytes já zerados
-            c1 = res[j] / pow(2, (8 - n)); // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
+            c1 = res[j] >> (8 - n); // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
             res[j] = (res[j] << n) | c2;   // desloca para esquerda e acrescenta o que ele recebeu do anterior
             c2 = c1;
         }
@@ -119,7 +119,7 @@ void big_shr(BigInt res, BigInt a, int n)
     int j = 0;
     unsigned char c1, c2 = 0; // c2 inicializado com 0 por ser unsigned shift
 
-    for (int i = 0; i != sizeof(BigInt); i++)
+    for (int i = 0; i < sizeof(BigInt); i++)
         res[i] = a[i]; // passa a para res
 
     for (; j < n / 8; j++) // n/8 representa o numero de shifts de 8 bits a serem feitos
@@ -141,7 +141,7 @@ void big_shr(BigInt res, BigInt a, int n)
         for (; j > -1; j--)
         {
             // guarda o que precisará passar para o anterior na próxima iteração, já deslocado para esquerda a quantidade necessária para encaixar
-            c1 = res[j] * pow(2, (8 - n));
+            c1 = res[j] << (8 - n);
             // desloca para direita e acrescenta o que ele recebeu da iteração anterior
             res[j] = (res[j] >> n) | c2;
             c2 = c1;
@@ -156,14 +156,14 @@ void big_sar(BigInt res, BigInt a, int n)
     int j = 0;
     unsigned char c1, c2;
 
-    for (int i = 0; i != sizeof(BigInt); i++)
+    for (int i = 0; i < sizeof(BigInt); i++)
         res[i] = a[i]; // passa a para res
 
     if ((res[15] & 0x80) == 0x80) // se o bit mais significativo for 1 (se o número é negativo)
     {
         // inicializa c2 com a quantidade de 1 à esquerda necessária para encaixar no último shift
         c2 = 0xFF;
-        c2 = c2 << (n % 8);
+        c2 = c2 << (7 - (n % 8));
     }
     else        // se o bit mais significativo for 0 (se o número é positivo)
         c2 = 0; // inicializa c2 com 0 pois não será preciso preencher com 1
@@ -191,7 +191,7 @@ void big_sar(BigInt res, BigInt a, int n)
         for (; j > -1; j--)
         {
             // guarda o que precisará passar para o anterior na próxima iteração, já deslocado para esquerda a quantidade necessária para encaixar
-            c1 = res[j] * pow(2, (8 - n));
+            c1 = res[j] << (8 - n);
 
             // desloca para direita e acrescenta o que ele recebeu da iteração anterior
             res[j] = (res[j] >> n) | c2;
