@@ -3,6 +3,7 @@
 
 #include "bigint.h"
 #include <math.h>
+#include <string.h>
 
 void big_val(BigInt res, long val)
 {
@@ -76,7 +77,27 @@ void big_sub(BigInt res, BigInt a, BigInt b)
 }
 
 /* res = a * b */
-void big_mul(BigInt res, BigInt a, BigInt b);
+void big_mul(BigInt res, BigInt a, BigInt b)
+{
+    BigInt tmp;
+    big_val(tmp, 0); // tmp = 0
+
+    for (int i = 0; i < sizeof(BigInt); i++)
+    {
+        for (int j = 0; j < 8; j++) // para cada bit do byte
+        {
+            if ((b[i] >> j) & 0x01) // se o bit for 1
+            {
+                big_sum(tmp, tmp, a); // tmp = tmp + a
+            }
+            big_shl(a, a, 1); // a = a << 1
+        }
+    }
+    for (int i = 0; i < sizeof(BigInt); i++)
+    {
+        res[i] = tmp[i]; // res = tmp
+    }
+}
 
 /* Operacoes de deslocamento */
 
@@ -104,9 +125,9 @@ void big_shl(BigInt res, BigInt a, int n)
     if (n)
     {
         for (; j < 16; j++)
-        {                                  // aproveita o j para não precisar mexer os bytes já zerados
-            c1 = res[j] >> (8 - n); // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
-            res[j] = (res[j] << n) | c2;   // desloca para esquerda e acrescenta o que ele recebeu do anterior
+        {                                // aproveita o j para não precisar mexer os bytes já zerados
+            c1 = res[j] >> (8 - n);      // guarda o que precisará passar para o próximo, já deslocado para direita a quantidade necessária para encaixar
+            res[j] = (res[j] << n) | c2; // desloca para esquerda e acrescenta o que ele recebeu do anterior
             c2 = c1;
         }
     }
@@ -172,12 +193,13 @@ void big_sar(BigInt res, BigInt a, int n)
     {
         for (int k = 0; (k + 1) < sizeof(BigInt); k++) // caminha do início ao final
         {
-            if ((k + 1) == 15){
+            if ((k + 1) == 15)
+            {
                 if ((res[k + 1] & 0x80) == 0x80) // se o bit mais significativo for 1 (se o número é negativo)
                     res[k + 1] = 0xFF;           // preenche os finais com 1
                 else                             // se o bit mais significativo for 0 (se o número é positivo)
                     res[k + 1] = 0;              // preenche os finais com 0
-            } 
+            }
             else
                 res[k] = res[k + 1]; // faz o shift de 8 bits para direita
         }

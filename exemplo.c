@@ -6,22 +6,26 @@
 #include <string.h>
 #include "bigint.h"
 
-#define assertBigInt(esperado, atual)                                                                                             \
-    do                                                                                                                            \
-    {                                                                                                                             \
-        const unsigned char *esperado_arr = (esperado);                                                                           \
-        const unsigned char *atual_arr = (atual);                                                                                 \
-        long long esperado_num = 0, atual_num = 0;                                                                                \
-        for (int i = 0; i < 8; i++)                                                                                               \
-        {                                                                                                                         \
-            esperado_num |= ((long long)esperado_arr[i] << (i * 8));                                                              \
-            atual_num |= ((long long)atual_arr[i] << (i * 8));                                                                    \
-        }                                                                                                                         \
-        if (esperado_num != atual_num)                                                                                            \
-        {                                                                                                                         \
-            fprintf(stderr, "Assert falhou: esperado %lld, mas recebeu %lld\tNA LINHA: %d\n", esperado_num, atual_num, __LINE__); \
-            exit(1);                                                                                                              \
-        }                                                                                                                         \
+#define assertBigInt(esperado, atual)                                                                                            \
+    do                                                                                                                           \
+    {                                                                                                                            \
+        const unsigned char *esperado_arr = (esperado);                                                                          \
+        const unsigned char *atual_arr = (atual);                                                                                \
+        long long esperado_num = 0, atual_num = 0;                                                                               \
+        for (int i = 0; i < 8; i++)                                                                                              \
+        {                                                                                                                        \
+            esperado_num |= ((long long)esperado_arr[i] << (i * 8));                                                             \
+            atual_num |= ((long long)atual_arr[i] << (i * 8));                                                                   \
+        }                                                                                                                        \
+        if (esperado_num != atual_num)                                                                                           \
+        {                                                                                                                        \
+            fprintf(stderr, "Teste falhou: esperado %lld, mas recebeu %lld\tNA LINHA: %d\n", esperado_num, atual_num, __LINE__); \
+            exit(1);                                                                                                             \
+        }                                                                                                                        \
+        else                                                                                                                     \
+        {                                                                                                                        \
+            printf("Teste passou: esperado %lld, e recebeu %lld\tNA LINHA: %d\n", esperado_num, atual_num, __LINE__);            \
+        }                                                                                                                        \
     } while (0)
 
 #define BIGINT_SIZE NUM_BITS / 8
@@ -33,7 +37,7 @@
         const unsigned char *atual_arr = (atual);          \
         if (memcmp(esperado_arr, atual_arr, 16) != 0)      \
         {                                                  \
-            fprintf(stderr, "Assert falhou: esperado ");   \
+            fprintf(stderr, "Teste falhou: esperado ");    \
             for (int i = 15; i >= 0; i--)                  \
             {                                              \
                 fprintf(stderr, "%02x", esperado_arr[i]);  \
@@ -45,6 +49,20 @@
             }                                              \
             fprintf(stderr, "\tNA LINHA: %d\n", __LINE__); \
             exit(1);                                       \
+        }                                                  \
+        else                                               \
+        {                                                  \
+            printf("Teste passou: esperado ");             \
+            for (int i = 15; i >= 0; i--)                  \
+            {                                              \
+                printf("%02x", esperado_arr[i]);           \
+            }                                              \
+            printf(", e recebeu ");                        \
+            for (int i = 15; i >= 0; i--)                  \
+            {                                              \
+                printf("%02x", atual_arr[i]);              \
+            }                                              \
+            printf("\tNA LINHA: %d\n", __LINE__);          \
         }                                                  \
     } while (0)
 
@@ -103,37 +121,42 @@ int main(void)
     big_sub(res, res, res2);
     big_val(check, -20);
     assertBigInt(check, res);
-    /*
-        big_val(res, 0);
-        big_val(res2, 479);
-        big_mul(res, res, res2);
-        big_val(check, 0);
-        assertBigInt(check, res);
 
-        big_val(res, 1);
-        big_val(res2, 479);
-        big_mul(res, res, res2);
-        big_val(check, 479);
-        assertBigInt(check, res);
+    big_val(res, 0);
+    big_val(res2, 479);
+    big_mul(res, res, res2);
+    big_val(check, 0);
+    assertBigInt(check, res);
 
-        big_val(res, 538);
-        big_val(res2, 0);
-        big_mul(res, res, res2);
-        big_val(check, 0);
-        assertBigInt(check, res);
+    big_val(res, 1);
+    big_val(res2, 479);
+    big_mul(res, res, res2);
+    big_val(check, 479);
+    assertBigInt(check, res);
 
-        big_val(res, 432);
-        big_val(res2, 1);
-        big_mul(res, res, res2);
-        big_val(check, 432);
-        assertBigInt(check, res);
+    big_val(res, 538);
+    big_val(res2, 0);
+    big_mul(res, res, res2);
+    big_val(check, 0);
+    assertBigInt(check, res);
 
-        big_val(res, 30);
-        big_val(res2, 479);
-        big_mul(res, res, res2);
-        big_val(check, 14370);
-        assertBigInt(check, res);
-    */
+    big_val(res, 432);
+    big_val(res2, 1);
+    big_mul(res, res, res2);
+    big_val(check, 432);
+    assertBigInt(check, res);
+
+    big_val(res, 30);
+    big_val(res2, 479);
+    big_mul(res, res, res2);
+    big_val(check, 14370);
+    assertBigInt(check, res);
+
+    big_val(res, 0xFFFFFFFFFFFFFFFF);
+    big_val(res2, 0xFFFFFFFFFFFFFFFF);
+    big_val(check, 0x0000000000000001);
+    big_mul(res, res, res2);
+    assertBigInt(check, res);
 
     big_val(res, 0x0000000000000000);
     big_val(check, 0x0000000000000000);
